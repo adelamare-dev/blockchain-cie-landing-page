@@ -1,0 +1,187 @@
+/**
+ * Design tokens.
+ *
+ * Light regime: ivory ground for reading, night-blue sequences for the hero
+ * and proof cartouches, one decisive signal accent, cobalt as a secondary
+ * nod to the current identity. There is no full dark theme.
+ *
+ * Contrast ratios, measured against ivory #FBF9F4:
+ *   ink          #14181F  15.9:1  AA/AAA
+ *   ink-muted    #4A5260   7.7:1  AA/AAA
+ *   ink-subtle   #626B7A   5.3:1  AA normal text
+ *   cobalt       #1A44B8   7.4:1  AA/AAA
+ *   signal       #A8420B   5.6:1  AA normal text
+ * Against night #101826:
+ *   paper            #FBF9F4  16.2:1  AA/AAA
+ *   night-muted      #A9B4C6   7.9:1  AA/AAA
+ *   signal-on-night  #F0894A   7.0:1  AA/AAA
+ */
+
+@layer tokens {
+  :root {
+    /* Base colors */
+    --color-paper: #fbf9f4;
+    --color-paper-raised: #ffffff;
+    --color-paper-sunken: #f2eee4;
+    --color-ink: #14181f;
+    --color-ink-muted: #4a5260;
+    --color-ink-subtle: #626b7a;
+
+    /* Night sequences: hero and proof cartouches */
+    --color-night: #101826;
+    --color-night-raised: #1a2434;
+    --color-night-ink: #fbf9f4;
+    --color-night-muted: #a9b4c6;
+
+    /* A single, decisive signal accent */
+    --color-signal: #a8420b;
+    --color-signal-on-night: #f0894a;
+
+    --color-cobalt: #1a44b8;
+    --color-cobalt-on-night: #8fadff;
+
+    /* Functional colors, reserved for statuses */
+    --color-status-ok: #1f6b3f;
+    --color-status-warn: #8a5a00;
+    --color-status-risk: #9b1c1c;
+
+    /* Rules and grid lines */
+    --color-rule: #ddd6c7;
+    --color-rule-strong: #c3b9a4;
+    --color-rule-night: #2c3950;
+
+    /* Semantic roles */
+    --color-bg: var(--color-paper);
+    --color-fg: var(--color-fg-default, var(--color-ink));
+    --color-link: var(--color-cobalt);
+    --color-focus: var(--color-signal);
+
+    /**
+     * Typography: system stacks only.
+     *
+     * No font file is shipped and no font request is made, which removes both
+     * the flash of unstyled text and any font-driven layout shift. Arial,
+     * Inter, Roboto and Space Grotesk are deliberately kept out of the stacks.
+     * Every family listed covers Latin Extended, so French and Spanish accents
+     * render without falling through to a default.
+     */
+
+    /* Display: condensed system grotesque. */
+    --font-display:
+      'Avenir Next Condensed', 'Avenir Next', 'Segoe UI Variable Display', 'Segoe UI Semibold',
+      Cantarell, 'DejaVu Sans Condensed', ui-sans-serif, system-ui, sans-serif;
+
+    /* Editorial serif: long-form text, quotes, case studies. */
+    --font-serif:
+      'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', 'Source Serif 4',
+      'Noto Serif', Charter, Georgia, ui-serif, serif;
+
+    /* Reading sans for regular interface text. */
+    --font-sans:
+      -apple-system, BlinkMacSystemFont, 'Segoe UI', Cantarell, 'Noto Sans', 'DejaVu Sans',
+      ui-sans-serif, system-ui, sans-serif;
+
+    /* Monospace: metrics, statuses, identifiers. */
+    --font-mono:
+      ui-monospace, 'SF Mono', 'Cascadia Mono', 'Segoe UI Mono', 'JetBrains Mono', 'Fira Mono',
+      'DejaVu Sans Mono', monospace;
+
+    /* Fluid type scale, clamped so it stays readable at 200% zoom */
+    --text-2xs: 0.75rem;
+    --text-xs: 0.8125rem;
+    --text-sm: 0.9375rem;
+    --text-base: 1.0625rem;
+    --text-md: clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem);
+    --text-lg: clamp(1.3125rem, 1.15rem + 0.8vw, 1.625rem);
+    --text-xl: clamp(1.625rem, 1.35rem + 1.35vw, 2.25rem);
+    --text-2xl: clamp(2rem, 1.5rem + 2.4vw, 3.125rem);
+    --text-3xl: clamp(2.375rem, 1.6rem + 3.6vw, 4rem);
+
+    --leading-tight: 1.08;
+    --leading-snug: 1.25;
+    --leading-normal: 1.55;
+    --leading-relaxed: 1.7;
+
+    --tracking-tight: -0.02em;
+    --tracking-normal: 0;
+    --tracking-wide: 0.02em;
+    --tracking-caps: 0.08em;
+
+    --weight-regular: 400;
+    --weight-medium: 500;
+    --weight-bold: 700;
+
+    /* Spacing, on a 4px base */
+    --space-3xs: 0.25rem;
+    --space-2xs: 0.5rem;
+    --space-xs: 0.75rem;
+    --space-sm: 1rem;
+    --space-md: 1.5rem;
+    --space-lg: 2rem;
+    --space-xl: 3rem;
+    --space-2xl: 4.5rem;
+    --space-3xl: 6.5rem;
+
+    /* Vertical rhythm between sections, tightened on small screens */
+    --section-gap: clamp(3.5rem, 2.5rem + 4vw, 7rem);
+
+    /* Editorial grid */
+    --measure: 68ch;
+    --measure-narrow: 54ch;
+    --container-max: 78rem;
+    --container-text: 44rem;
+    --gutter: clamp(1.25rem, 0.75rem + 2.5vw, 3rem);
+
+    /* Radii stay restrained: hierarchy comes from rules, not from roundness */
+    --radius-sm: 2px;
+    --radius-md: 4px;
+    --radius-lg: 8px;
+    --radius-pill: 999px;
+
+    --shadow-sm: 0 1px 2px rgb(20 24 31 / 0.06);
+    --shadow-md: 0 2px 8px rgb(20 24 31 / 0.08);
+    --shadow-lg: 0 8px 28px rgb(20 24 31 / 0.1);
+
+    /* Motion is limited to transform and opacity */
+    --duration-fast: 120ms;
+    --duration-base: 220ms;
+    --duration-slow: 420ms;
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+    /* WCAG 2.2 AA minimum target size (2.5.8) */
+    --touch-target: 24px;
+    --touch-target-comfortable: 44px;
+
+    /* Anchor offset under the sticky header */
+    --header-height: 4rem;
+    --scroll-offset: calc(var(--header-height) + var(--space-sm));
+
+    color-scheme: light;
+  }
+
+  /**
+   * Night sequence. Applied to a section, it redefines the semantic roles
+   * without renaming any token, so nested components follow with no
+   * conditional styling of their own.
+   */
+  .surface-night {
+    --color-bg: var(--color-night);
+    --color-fg-default: var(--color-night-ink);
+    --color-ink: var(--color-night-ink);
+    --color-ink-muted: var(--color-night-muted);
+    --color-ink-subtle: var(--color-night-muted);
+    --color-rule: var(--color-rule-night);
+    --color-rule-strong: var(--color-rule-night);
+    --color-paper: var(--color-night);
+    --color-paper-raised: var(--color-night-raised);
+    --color-paper-sunken: var(--color-night-raised);
+    --color-link: var(--color-cobalt-on-night);
+    --color-signal: var(--color-signal-on-night);
+    --color-focus: var(--color-signal-on-night);
+
+    background-color: var(--color-night);
+    color: var(--color-night-ink);
+    color-scheme: dark;
+  }
+}

@@ -1,0 +1,131 @@
+---
+/**
+ * Recent work: the anonymized client proofs.
+ * Anchor target for the header's "recent work" nav link.
+ */
+import type { Proof, SectionIntro } from '../../content/types';
+
+interface Props {
+  content: SectionIntro;
+  proofs: readonly Proof[];
+}
+
+const { content, proofs } = Astro.props;
+---
+
+<section id="realisations" class="recent-work section">
+  <div class="recent-work__inner container">
+    <h2>{content.title}</h2>
+    <p class="recent-work__intro measure">{content.intro}</p>
+
+    <ul class="recent-work__list">
+      {
+        proofs.map((proof) => (
+          <li class="recent-work__card">
+            <h3 class="recent-work__label">{proof.label}</h3>
+            <p class="recent-work__context">{proof.context}</p>
+
+            <ul class="recent-work__results">
+              {proof.results.map((result) => (
+                <li>
+                  <span class="recent-work__result-metric mono-label">{result.metric}</span>
+                  <span class="recent-work__result-context">{result.context}</span>
+                </li>
+              ))}
+            </ul>
+
+            <p class="recent-work__limits">{proof.limits}</p>
+
+            {/* No dedicated label exists in the content model for this list,
+                so it stays a plain list rather than introducing hardcoded,
+                unlocalized text as an aria-label. */}
+            <ul class="recent-work__stack">
+              {proof.stack.map((tech) => (
+                <li>{tech}</li>
+              ))}
+            </ul>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .recent-work__inner {
+    display: grid;
+    gap: var(--space-sm);
+  }
+
+  .recent-work__intro {
+    color: var(--color-ink-muted);
+  }
+
+  .recent-work__list {
+    margin-block-start: var(--space-md);
+    display: grid;
+    gap: var(--space-lg);
+  }
+
+  .recent-work__card {
+    display: grid;
+    gap: var(--space-sm);
+    padding: var(--space-lg);
+    background-color: var(--color-paper-raised);
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-lg);
+  }
+
+  .recent-work__context {
+    color: var(--color-ink-muted);
+  }
+
+  .recent-work__results {
+    display: grid;
+    gap: var(--space-2xs);
+  }
+
+  .recent-work__results li {
+    display: grid;
+    gap: var(--space-3xs);
+  }
+
+  .recent-work__result-metric {
+    color: var(--color-signal);
+  }
+
+  .recent-work__result-context {
+    display: block;
+    font-size: var(--text-sm);
+    color: var(--color-ink-subtle);
+  }
+
+  .recent-work__limits {
+    font-size: var(--text-sm);
+    font-style: italic;
+    color: var(--color-ink-subtle);
+  }
+
+  .recent-work__stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+  }
+
+  .recent-work__stack li {
+    padding: var(--space-3xs) var(--space-2xs);
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    color: var(--color-ink-muted);
+    background-color: var(--color-paper-sunken);
+    border-radius: var(--radius-sm);
+  }
+
+  @media (width >= 48rem) {
+    .recent-work__results li {
+      grid-template-columns: minmax(12rem, auto) 1fr;
+      align-items: baseline;
+      gap: var(--space-sm);
+    }
+  }
+</style>

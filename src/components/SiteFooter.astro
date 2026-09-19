@@ -1,0 +1,102 @@
+---
+import { type Locale } from '../i18n/config';
+import { getPath } from '../i18n/routes';
+import { getContent } from '../content';
+import { CONTACT_EMAIL, CONTACT_MAILTO } from '../lib/links';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const { ui } = getContent(locale);
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="site-footer__inner container">
+    <div class="site-footer__brand">
+      <p class="site-footer__name">Blockchain &amp; Cie</p>
+      <p class="site-footer__tagline">{ui.footer.tagline}</p>
+    </div>
+
+    <nav class="site-footer__nav">
+      <ul class="site-footer__list">
+        <li>
+          <a href={getPath('legal-notice', locale)}>{ui.footer.legalNoticeLabel}</a>
+        </li>
+        <li>
+          <a href={getPath('privacy', locale)}>{ui.footer.privacyPolicyLabel}</a>
+        </li>
+        <li>
+          <a href={CONTACT_MAILTO} data-analytics="email_click">{CONTACT_EMAIL}</a>
+        </li>
+      </ul>
+    </nav>
+
+    <p class="site-footer__rights">
+      {year} Blockchain &amp; Cie. {ui.footer.rightsReserved}
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-block-start: var(--section-gap);
+    padding-block: var(--space-xl);
+    border-block-start: 1px solid var(--color-rule);
+    background-color: var(--color-paper-sunken);
+  }
+
+  .site-footer__inner {
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  .site-footer__name {
+    font-family: var(--font-display);
+    font-weight: var(--weight-bold);
+    color: var(--color-ink);
+  }
+
+  .site-footer__tagline {
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+    max-width: var(--measure-narrow);
+  }
+
+  .site-footer__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm) var(--space-md);
+  }
+
+  .site-footer__list a {
+    display: inline-block;
+    padding-block: var(--space-3xs);
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+  }
+
+  .site-footer__list a:hover {
+    color: var(--color-ink);
+  }
+
+  .site-footer__rights {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    color: var(--color-ink-subtle);
+  }
+
+  @media (width >= 48rem) {
+    .site-footer__inner {
+      grid-template-columns: 1fr auto;
+      align-items: start;
+    }
+
+    .site-footer__rights {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

@@ -1,0 +1,78 @@
+---
+/**
+ * Shared document shell for every page.
+ *
+ * Holds the skip link, the landmarks and the single stylesheet. Pages supply
+ * their own metadata and JSON-LD graph through props.
+ */
+import { HTML_LANG, type Locale } from '../i18n/config';
+import type { RouteId } from '../i18n/routes';
+import { getContent } from '../content';
+import Seo from '../components/Seo.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import '../styles/global.css';
+
+interface Props {
+  locale: Locale;
+  routeId: RouteId;
+  title: string;
+  description: string;
+  jsonLd?: string;
+  noindex?: boolean;
+}
+
+const { locale, routeId, title, description, jsonLd, noindex } = Astro.props;
+const { ui } = getContent(locale);
+---
+
+<!doctype html>
+<html lang={HTML_LANG[locale]}>
+  <head>
+    <Seo
+      locale={locale}
+      routeId={routeId}
+      title={title}
+      description={description}
+      jsonLd={jsonLd}
+      noindex={noindex}
+    />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{ui.skipLink}</a>
+
+    <SiteHeader locale={locale} routeId={routeId} />
+
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+
+    <SiteFooter locale={locale} />
+
+    <style>
+      /* The skip link stays off screen until it takes focus, then anchors
+         itself to the top of the viewport above the sticky header. */
+      .skip-link {
+        position: absolute;
+        inset-inline-start: var(--space-sm);
+        inset-block-start: -100%;
+        z-index: 100;
+        padding: var(--space-2xs) var(--space-sm);
+        background-color: var(--color-ink);
+        color: var(--color-paper);
+        text-decoration: none;
+        border-radius: var(--radius-sm);
+      }
+
+      .skip-link:focus-visible {
+        inset-block-start: var(--space-sm);
+      }
+
+      /* The main landmark is focused by the skip link, so it must not paint
+         a focus ring of its own when reached that way. */
+      main:focus {
+        outline: none;
+      }
+    </style>
+  </body>
+</html>

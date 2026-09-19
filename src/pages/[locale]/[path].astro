@@ -1,0 +1,122 @@
+---
+/**
+ * The two commercial path pages: reliability and build.
+ *
+ * One Astro route generates both slugs per locale. `pathId` on each static
+ * path tells the template which entry of `paths` to render and which
+ * `RouteId` to pass down for hreflang, breadcrumbs and JSON-LD.
+ */
+import { LOCALES, type Locale } from '../../i18n/config';
+import { getSlug, getUrl, type RouteId } from '../../i18n/routes';
+import { getContent, getOffer, getProof } from '../../content';
+import type { PathId } from '../../content/types';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/path/Breadcrumb.astro';
+import PathIntent from '../../components/path/PathIntent.astro';
+import PathSituations from '../../components/path/PathSituations.astro';
+import PathOffers from '../../components/path/PathOffers.astro';
+import PathMethod from '../../components/path/PathMethod.astro';
+import PathProof from '../../components/path/PathProof.astro';
+import PathFit from '../../components/path/PathFit.astro';
+import PathRetainer from '../../components/path/PathRetainer.astro';
+import PathFaq from '../../components/path/PathFaq.astro';
+import PathCta from '../../components/path/PathCta.astro';
+import {
+  buildOrganization,
+  buildPerson,
+  buildWebSite,
+  buildWebPage,
+  buildServices,
+  buildBreadcrumbs,
+  buildFaq,
+  buildGraph,
+} from '../../lib/schema';
+
+interface PathStaticProps {
+  locale: Locale;
+  pathId: PathId;
+  routeId: RouteId;
+}
+
+export function getStaticPaths() {
+  const routeByPathId: Record<PathId, RouteId> = {
+    reliability: 'path-reliability',
+    build: 'path-build',
+  };
+
+  return LOCALES.flatMap((locale) =>
+    (Object.keys(routeByPathId) as PathId[]).map((pathId) => {
+      const routeId = routeByPathId[pathId];
+      return {
+        params: { locale, path: getSlug(routeId, locale) },
+        props: { locale, pathId, routeId } satisfies PathStaticProps,
+      };
+    }),
+  );
+}
+
+const { locale, pathId, routeId } = Astro.props as PathStaticProps;
+
+const content = getContent(locale);
+const { ui, meta } = content;
+const pathPage = content.paths[pathId];
+
+const routeMetaByRouteId = {
+  'path-reliability': meta.pathReliability,
+  'path-build': meta.pathBuild,
+} as const;
+const pageMeta = routeMetaByRouteId[routeId as 'path-reliability' | 'path-build'];
+
+const offers = pathPage.offerIds.map((id) => getOffer(locale, id));
+const proof = getProof(locale, pathPage.proofId);
+const retainerOffer = getOffer(locale, 'retainer');
+
+const labels = ui.pathLabels;
+---
+
+<BaseLayout
+  locale={locale}
+  routeId={routeId}
+  title={pageMeta.title}
+  description={pageMeta.description}
+  jsonLd={buildGraph([
+    buildOrganization(locale),
+    buildPerson(locale),
+    buildWebSite(locale),
+    buildWebPage({ locale, routeId, title: pageMeta.title, description: pageMeta.description }),
+    ...buildServices(locale, offers),
+    buildBreadcrumbs([
+      { name: ui.breadcrumbHome, url: getUrl('home', locale) },
+      { name: pathPage.intent.title, url: getUrl(routeId, locale) },
+    ]),
+    buildFaq(pathPage.faq.items),
+  ])}
+>
+  <Breadcrumb locale={locale} currentLabel={pathPage.intent.title} ariaLabel={ui.aria.breadcrumb} />
+
+  <PathIntent intent={pathPage.intent} />
+
+  <PathSituations title={labels.situationsTitle} situations={pathPage.situations} />
+
+  <PathOffers title={labels.offersTitle} offers={offers} labels={labels.offerFields} />
+
+  <PathMethod method={pathPage.method} responsibilitiesTitle={labels.responsibilitiesTitle} />
+
+  <PathProof title={labels.proofTitle} proof={proof} labels={labels.proofFields} />
+
+  <PathFit
+    fit={pathPage.fit}
+    fitCriteriaLabel={labels.fitCriteriaLabel}
+    exclusionsLabel={labels.exclusionsLabel}
+  />
+
+  <PathRetainer
+    retainer={pathPage.retainer}
+    offer={retainerOffer}
+    deliverablesLabel={labels.retainerDeliverablesLabel}
+  />
+
+  <PathFaq title={pathPage.faq.title} items={pathPage.faq.items} />
+
+  <PathCta cta={pathPage.cta} />
+</BaseLayout>

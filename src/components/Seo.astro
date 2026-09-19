@@ -1,0 +1,75 @@
+---
+/**
+ * Document head: canonical, reciprocal hreflang, social cards and JSON-LD.
+ *
+ * Alternates are derived from the route table rather than hand-written, so a
+ * page can never advertise a language version that does not exist.
+ */
+import { HTML_LANG, LOCALES, X_DEFAULT_LOCALE, SITE_URL, type Locale } from '../i18n/config';
+import { getAlternates, getUrl, type RouteId } from '../i18n/routes';
+
+interface Props {
+  locale: Locale;
+  routeId: RouteId;
+  title: string;
+  description: string;
+  jsonLd?: string;
+  noindex?: boolean;
+}
+
+const { locale, routeId, title, description, jsonLd, noindex = false } = Astro.props;
+
+const canonical = getUrl(routeId, locale);
+const alternates = getAlternates(routeId);
+const xDefault = getUrl(routeId, X_DEFAULT_LOCALE);
+
+// One image per locale, so the social card is readable in the reader's language.
+const ogImage = `${SITE_URL}/og/${routeId}-${locale}.png`;
+
+const openGraphLocale: Record<Locale, string> = {
+  fr: 'fr_FR',
+  en: 'en_US',
+  es: 'es_ES',
+};
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+
+{noindex && <meta name="robots" content="noindex, follow" />}
+
+{
+  alternates.map(({ locale: alternateLocale, url }) => (
+    <link rel="alternate" hreflang={HTML_LANG[alternateLocale]} href={url} />
+  ))
+}
+<link rel="alternate" hreflang="x-default" href={xDefault} />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Blockchain & Cie" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:locale" content={openGraphLocale[locale]} />
+{
+  LOCALES.filter((candidate) => candidate !== locale).map((candidate) => (
+    <meta property="og:locale:alternate" content={openGraphLocale[candidate]} />
+  ))
+}
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/favicon.ico" sizes="32x32" />
+
+{jsonLd && <script type="application/ld+json" set:html={jsonLd} />}

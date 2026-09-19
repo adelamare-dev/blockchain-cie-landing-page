@@ -1,0 +1,93 @@
+---
+/**
+ * Offers overview: compact map of the 6 offers, grouped by path.
+ * No price is rendered anywhere, matching the JSON-LD Service nodes.
+ */
+import type { Offer, SectionIntro } from '../../content/types';
+
+interface Props {
+  content: SectionIntro;
+  offers: readonly Offer[];
+}
+
+const { content, offers } = Astro.props;
+
+const groups: Array<{ path: Offer['path']; offers: Offer[] }> = [
+  { path: 'reliability', offers: offers.filter((offer) => offer.path === 'reliability') },
+  { path: 'build', offers: offers.filter((offer) => offer.path === 'build') },
+  { path: 'continuity', offers: offers.filter((offer) => offer.path === 'continuity') },
+];
+---
+
+<section class="offers section">
+  <div class="offers__inner container">
+    <h2>{content.title}</h2>
+    <p class="offers__intro measure">{content.intro}</p>
+
+    <div class="offers__groups">
+      {
+        groups.map((group) => (
+          <div class="offers__group">
+            <ul class="offers__list">
+              {group.offers.map((offer) => (
+                <li class="offers__card">
+                  <h3 class="offers__name">{offer.name}</h3>
+                  <p class="offers__descriptor">{offer.descriptor}</p>
+                  <p class="offers__outcome">{offer.outcome}</p>
+                  <p class="offers__duration mono-label">{offer.duration}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .offers__inner {
+    display: grid;
+    gap: var(--space-sm);
+  }
+
+  .offers__intro {
+    color: var(--color-ink-muted);
+  }
+
+  .offers__groups {
+    margin-block-start: var(--space-md);
+    display: grid;
+    gap: var(--space-lg);
+  }
+
+  .offers__list {
+    display: grid;
+    gap: var(--space-md);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  }
+
+  .offers__card {
+    display: grid;
+    align-content: start;
+    gap: var(--space-2xs);
+    padding: var(--space-md);
+    background-color: var(--color-paper-raised);
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-md);
+  }
+
+  .offers__descriptor {
+    font-size: var(--text-sm);
+    color: var(--color-ink-subtle);
+  }
+
+  .offers__outcome {
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+  }
+
+  .offers__duration {
+    margin-block-start: var(--space-2xs);
+  }
+</style>

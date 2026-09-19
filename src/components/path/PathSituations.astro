@@ -1,0 +1,51 @@
+---
+/**
+ * Situations that justify choosing this path. Plain list, no heading level
+ * skipped: this is the first h2 on the page.
+ */
+interface Props {
+  title: string;
+  situations: readonly string[];
+}
+
+const { title, situations } = Astro.props;
+---
+
+<section class="path-situations section">
+  <div class="container">
+    <h2 class="path-situations__title">{title}</h2>
+    <ul class="path-situations__list">
+      {situations.map((situation) => <li class="path-situations__item">{situation}</li>)}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .path-situations__title {
+    max-width: var(--measure);
+    margin-block-end: var(--space-lg);
+  }
+
+  .path-situations__list {
+    display: grid;
+    gap: var(--space-sm);
+    max-width: var(--measure);
+  }
+
+  .path-situations__item {
+    position: relative;
+    padding-inline-start: var(--space-md);
+    font-size: var(--text-md);
+    color: var(--color-ink-muted);
+  }
+
+  .path-situations__item::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 0.65em;
+    width: var(--space-2xs);
+    height: 2px;
+    background-color: var(--color-signal);
+  }
+</style>

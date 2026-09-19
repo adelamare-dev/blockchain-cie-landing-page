@@ -1,0 +1,109 @@
+---
+/**
+ * Path choice: the two commercial doors, Fiabiliser / Construire.
+ * Anchor target for the hero's secondary call to action.
+ */
+import type { PathChoiceSection } from '../../content/types';
+import type { Locale } from '../../i18n/config';
+import { getPath } from '../../i18n/routes';
+
+interface Props {
+  content: PathChoiceSection;
+  locale: Locale;
+}
+
+const { content, locale } = Astro.props;
+
+const routeByPath = {
+  reliability: 'path-reliability',
+  build: 'path-build',
+} as const;
+---
+
+<section id="parcours" class="path-choice section">
+  <div class="path-choice__inner container">
+    <h2>{content.title}</h2>
+
+    <div class="path-choice__grid">
+      {
+        content.cards.map((card) => (
+          <a
+            class="path-choice__card"
+            href={getPath(routeByPath[card.pathId], locale)}
+            data-analytics="path_selected"
+          >
+            <h3 class="path-choice__card-title">{card.title}</h3>
+            <p class="path-choice__card-description">{card.description}</p>
+            <ul class="path-choice__signals">
+              {card.signals.map((signal) => (
+                <li>{signal}</li>
+              ))}
+            </ul>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .path-choice__inner {
+    display: grid;
+    gap: var(--space-lg);
+  }
+
+  .path-choice__grid {
+    display: grid;
+    gap: var(--space-md);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  }
+
+  .path-choice__card {
+    display: grid;
+    align-content: start;
+    gap: var(--space-sm);
+    padding: var(--space-lg);
+    background-color: var(--color-paper-raised);
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-lg);
+    color: var(--color-ink);
+    text-decoration: none;
+    transition: transform var(--duration-base) var(--ease-out);
+  }
+
+  .path-choice__card:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-rule-strong);
+  }
+
+  .path-choice__card-title {
+    color: var(--color-ink);
+  }
+
+  .path-choice__card-description {
+    color: var(--color-ink-muted);
+  }
+
+  .path-choice__signals {
+    display: grid;
+    gap: var(--space-2xs);
+    font-size: var(--text-sm);
+    color: var(--color-ink-subtle);
+  }
+
+  .path-choice__signals li {
+    padding-inline-start: var(--space-sm);
+    position: relative;
+  }
+
+  .path-choice__signals li::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 0.6em;
+    width: 6px;
+    height: 6px;
+    background-color: var(--color-signal);
+    border-radius: var(--radius-pill);
+  }
+</style>

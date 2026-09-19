@@ -1,0 +1,335 @@
+/**
+ * Global foundations.
+ *
+ * Layer order is declared once, here. Component styles live in their own
+ * `.astro` files and land in the `components` layer, so a component can
+ * always override a foundation without raising its selector specificity.
+ */
+
+@layer reset, tokens, base, components, utilities;
+
+@import './tokens.css';
+
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  * {
+    margin: 0;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    min-height: 100dvh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  img,
+  picture,
+  svg,
+  video {
+    display: block;
+    max-width: 100%;
+  }
+
+  input,
+  button,
+  textarea,
+  select {
+    font: inherit;
+    color: inherit;
+  }
+
+  /* Long German-style compounds do not occur here, but Spanish headings run
+     noticeably longer than French ones and must not overflow their column. */
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  li,
+  dt,
+  dd {
+    overflow-wrap: break-word;
+  }
+
+  ul[class],
+  ol[class] {
+    list-style: none;
+    padding: 0;
+  }
+}
+
+@layer base {
+  html {
+    /* Offsets in-page anchors so a heading never lands under the sticky header. */
+    scroll-padding-top: var(--scroll-offset);
+  }
+
+  /* Smooth scrolling is opt-in: it is disabled for readers who ask for
+     reduced motion, and `scroll-padding-top` above keeps working either way. */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: var(--weight-bold);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tight);
+    text-wrap: balance;
+  }
+
+  h1 {
+    font-size: var(--text-3xl);
+  }
+
+  h2 {
+    font-size: var(--text-2xl);
+  }
+
+  h3 {
+    font-size: var(--text-lg);
+  }
+
+  h4 {
+    font-size: var(--text-md);
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  a {
+    color: var(--color-link);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  a:hover {
+    text-decoration-thickness: 2px;
+  }
+
+  /* One focus style for the whole site. Visible on both light and night
+     surfaces because `--color-focus` is redefined by `.surface-night`. */
+  :focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  :target {
+    scroll-margin-top: var(--scroll-offset);
+  }
+
+  strong,
+  b {
+    font-weight: var(--weight-bold);
+  }
+
+  code,
+  kbd,
+  samp {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+  }
+
+  hr {
+    height: 1px;
+    border: 0;
+    background-color: var(--color-rule);
+  }
+
+  ::selection {
+    background-color: var(--color-signal);
+    color: var(--color-paper);
+  }
+}
+
+@layer components {
+  /**
+   * Buttons.
+   *
+   * Every call to action on this site navigates somewhere, so these classes
+   * are applied to `<a>` elements. `<button>` stays reserved for controls that
+   * act on the current page.
+   */
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2xs);
+    min-height: var(--touch-target-comfortable);
+    padding: var(--space-2xs) var(--space-md);
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    line-height: var(--leading-snug);
+    text-align: center;
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition:
+      transform var(--duration-fast) var(--ease-out),
+      opacity var(--duration-fast) var(--ease-out);
+  }
+
+  .button:active {
+    transform: translateY(1px);
+  }
+
+  /**
+   * The signal accent lightens on night surfaces for legibility as text, which
+   * would leave white button text at roughly 3:1. The button therefore pins its
+   * own pair of colors instead of inheriting the surface accent: dark ink on
+   * the light accent reads at 7:1 on night, white on the deep accent at 5.6:1
+   * on ivory.
+   */
+  .button--primary {
+    background-color: var(--button-bg, var(--color-signal));
+    color: var(--button-fg, var(--color-paper));
+  }
+
+  .surface-night .button--primary {
+    --button-bg: var(--color-signal-on-night);
+    --button-fg: var(--color-night);
+  }
+
+  .button--primary:hover {
+    opacity: 0.9;
+  }
+
+  .button--secondary {
+    background-color: transparent;
+    color: var(--color-ink);
+    border-color: var(--color-rule-strong);
+  }
+
+  .button--secondary:hover {
+    border-color: var(--color-ink);
+  }
+}
+
+@layer utilities {
+  /* Visible only to assistive technology, and to keyboard users on focus. */
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .container {
+    width: 100%;
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  .container-text {
+    width: 100%;
+    max-width: var(--container-text);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  .measure {
+    max-width: var(--measure);
+  }
+
+  .measure-narrow {
+    max-width: var(--measure-narrow);
+  }
+
+  .section {
+    padding-block: var(--section-gap);
+  }
+
+  /* Monospace treatment for metrics, statuses and identifiers. */
+  .mono-label {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-medium);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--color-ink-subtle);
+  }
+
+  .stack > * + * {
+    margin-block-start: var(--stack-gap, var(--space-sm));
+  }
+}
+
+/**
+ * Reduced motion.
+ *
+ * Animations jump straight to their final state rather than being removed, so
+ * content stays readable and no element is left mid-transition.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/**
+ * Print styles for long-form content.
+ * Link targets are spelled out, since a printed page cannot be clicked.
+ */
+@media print {
+  body {
+    background: #fff;
+    color: #000;
+    font-family: var(--font-serif);
+  }
+
+  .site-header,
+  .site-footer nav,
+  .skip-link {
+    display: none;
+  }
+
+  a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 0.85em;
+    word-break: break-all;
+  }
+
+  h1,
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+}

@@ -1,0 +1,18 @@
+# minimumReleaseAge: 10080
+minimumReleaseAge: 2880
+minimumReleaseAgeStrict: true
+minimumReleaseAgeIgnoreMissingTime: false
+
+trustPolicy: no-downgrade
+blockExoticSubdeps: true
+trustLockfile: false
+
+strictDepBuilds: true
+dangerouslyAllowAllBuilds: false
+
+audit:
+  level: high
+
+allowBuilds:
+  esbuild: true
+  sharp: true

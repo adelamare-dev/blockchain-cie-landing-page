@@ -1,0 +1,62 @@
+---
+/**
+ * Proof strip: short verified metrics, monospace treatment.
+ * Sits directly under the hero, still visually tied to the night sequence.
+ */
+import type { ProofStripItem } from '../../content/types';
+
+interface Props {
+  items: ProofStripItem[];
+}
+
+const { items } = Astro.props;
+---
+
+{/* No dedicated title exists in HomeContent for this section, so it is
+    marked as a region without an extra heading level: the surrounding hero
+    h1 and the following h2 already frame it in the outline. */}
+<section class="proof-strip surface-night">
+  <div class="proof-strip__inner container">
+    <ul class="proof-strip__list">
+      {
+        items.map((item) => (
+          <li class="proof-strip__item">
+            <p class="proof-strip__metric">{item.metric}</p>
+            <p class="proof-strip__context">{item.context}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .proof-strip {
+    padding-block-end: var(--space-2xl);
+  }
+
+  .proof-strip__list {
+    display: grid;
+    gap: var(--space-lg);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    border-block-start: 1px solid var(--color-rule);
+    padding-block-start: var(--space-lg);
+  }
+
+  /* Monospace runs wide, so the figures use the step below the heading scale.
+     `balance` keeps a two-line metric from breaking after a single word. */
+  .proof-strip__metric {
+    font-family: var(--font-mono);
+    font-size: var(--text-md);
+    font-weight: var(--weight-bold);
+    line-height: var(--leading-snug);
+    text-wrap: balance;
+    color: var(--color-signal);
+  }
+
+  .proof-strip__context {
+    margin-block-start: var(--space-3xs);
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+  }
+</style>

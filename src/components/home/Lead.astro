@@ -1,0 +1,62 @@
+---
+/**
+ * Lead: Antoine as technical lead across every engagement.
+ * Anchor target for the header's "expertise" nav link.
+ */
+import type { LeadSection } from '../../content/types';
+
+interface Props {
+  content: LeadSection;
+}
+
+const { content } = Astro.props;
+---
+
+<section id="expertise" class="lead section">
+  <div class="lead__inner container">
+    <div class="lead__card">
+      <p class="lead__role mono-label">{content.role}</p>
+      <h2 class="lead__name">{content.name}</h2>
+      <p class="lead__bio measure">{content.bio}</p>
+
+      <ul class="lead__credentials">
+        {content.credentials.map((credential) => <li>{credential}</li>)}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .lead__card {
+    display: grid;
+    gap: var(--space-sm);
+    padding: var(--space-lg);
+    background-color: var(--color-paper-raised);
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-lg);
+  }
+
+  .lead__role {
+    color: var(--color-ink-subtle);
+  }
+
+  .lead__bio {
+    color: var(--color-ink-muted);
+  }
+
+  .lead__credentials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs) var(--space-md);
+  }
+
+  .lead__credentials li {
+    font-size: var(--text-sm);
+    color: var(--color-ink-subtle);
+  }
+
+  .lead__credentials li:not(:last-child) {
+    padding-inline-end: var(--space-md);
+    border-inline-end: 1px solid var(--color-rule);
+  }
+</style>

@@ -1,0 +1,64 @@
+---
+/**
+ * Method: the 4-step working process, same for every engagement size.
+ */
+import type { HomeContent } from '../../content/types';
+
+interface Props {
+  content: HomeContent['method'];
+}
+
+const { content } = Astro.props;
+---
+
+<section class="method section">
+  <div class="method__inner container">
+    <h2>{content.title}</h2>
+    <p class="method__intro measure">{content.intro}</p>
+
+    <ol class="method__steps">
+      {
+        content.steps.map((step, index) => (
+          <li class="method__step">
+            <span class="method__index mono-label">{String(index + 1).padStart(2, '0')}</span>
+            <h3 class="method__step-title">{step.title}</h3>
+            <p class="method__step-description">{step.description}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .method__inner {
+    display: grid;
+    gap: var(--space-sm);
+  }
+
+  .method__intro {
+    color: var(--color-ink-muted);
+  }
+
+  .method__steps {
+    margin-block-start: var(--space-md);
+    display: grid;
+    gap: var(--space-lg);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  }
+
+  .method__step {
+    display: grid;
+    gap: var(--space-2xs);
+    padding-block-start: var(--space-sm);
+    border-block-start: 2px solid var(--color-signal);
+  }
+
+  .method__index {
+    color: var(--color-ink-subtle);
+  }
+
+  .method__step-description {
+    color: var(--color-ink-muted);
+  }
+</style>

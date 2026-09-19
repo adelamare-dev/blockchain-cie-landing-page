@@ -1,0 +1,330 @@
+---
+/**
+ * Site header: navigation, language switcher and the booking call to action.
+ *
+ * The mobile menu is a `<details>` element, so it opens, closes and traps no
+ * focus without a single line of JavaScript. The one script on the page closes
+ * it on Escape and on outside click, which are conveniences rather than
+ * requirements: the menu is fully operable with the script disabled.
+ */
+import { LOCALE_LABEL, LOCALES, type Locale } from '../i18n/config';
+import { getPath, type RouteId } from '../i18n/routes';
+import { getContent } from '../content';
+import { CALENDLY_URL } from '../lib/links';
+
+interface Props {
+  locale: Locale;
+  routeId: RouteId;
+}
+
+const { locale, routeId } = Astro.props;
+const { ui } = getContent(locale);
+
+const homePath = getPath('home', locale);
+
+const navItems = [
+  { label: ui.nav.reliability, href: getPath('path-reliability', locale) },
+  { label: ui.nav.build, href: getPath('path-build', locale) },
+  { label: ui.nav.recentWork, href: `${homePath}#realisations` },
+  { label: ui.nav.expertise, href: `${homePath}#expertise` },
+];
+---
+
+<header class="site-header">
+  <div class="site-header__inner container">
+    <a class="site-header__brand" href={homePath}>
+      <span class="site-header__brand-name">Blockchain &amp; Cie</span>
+    </a>
+
+    <nav class="site-header__nav" aria-label={ui.aria.mainNav}>
+      <ul class="site-header__list">
+        {
+          navItems.map((item) => (
+            <li>
+              <a class="site-header__link" href={item.href}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="site-header__actions">
+      <nav class="lang-switcher" aria-label={ui.aria.languageSwitcher}>
+        <ul class="lang-switcher__list">
+          {
+            LOCALES.map((candidate) => (
+              <li>
+                <a
+                  class="lang-switcher__link"
+                  href={getPath(routeId, candidate)}
+                  hreflang={candidate}
+                  lang={candidate}
+                  aria-current={candidate === locale ? 'true' : undefined}
+                  data-analytics="language_switch"
+                >
+                  <span class="visually-hidden">{LOCALE_LABEL[candidate]}</span>
+                  <span aria-hidden="true">{candidate.toUpperCase()}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <a class="button button--primary site-header__cta" href={CALENDLY_URL}>
+        {ui.nav.ctaCalendly}
+      </a>
+    </div>
+
+    <details class="mobile-menu">
+      <summary class="mobile-menu__toggle">
+        <span class="visually-hidden">{ui.aria.mobileMenuToggle}</span>
+        <span class="mobile-menu__icon" aria-hidden="true"></span>
+      </summary>
+      <div class="mobile-menu__panel">
+        <ul class="mobile-menu__list">
+          {
+            navItems.map((item) => (
+              <li>
+                <a class="mobile-menu__link" href={item.href}>
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <a class="button button--primary mobile-menu__cta" href={CALENDLY_URL}>
+          {ui.nav.ctaCalendly}
+        </a>
+
+        <nav class="lang-switcher mobile-menu__langs" aria-label={ui.aria.languageSwitcher}>
+          <ul class="lang-switcher__list">
+            {
+              LOCALES.map((candidate) => (
+                <li>
+                  <a
+                    class="lang-switcher__link"
+                    href={getPath(routeId, candidate)}
+                    hreflang={candidate}
+                    lang={candidate}
+                    aria-current={candidate === locale ? 'true' : undefined}
+                  >
+                    <span class="visually-hidden">{LOCALE_LABEL[candidate]}</span>
+                    <span aria-hidden="true">{candidate.toUpperCase()}</span>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </div>
+    </details>
+  </div>
+</header>
+
+<script>
+  // Progressive enhancement for the mobile menu. Without this script the
+  // menu still opens and closes: `<details>` does that natively.
+  const menu = document.querySelector('.mobile-menu');
+
+  if (menu) {
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && menu.open) {
+        menu.open = false;
+        menu.querySelector('.mobile-menu__toggle')?.focus();
+      }
+    });
+
+    document.addEventListener('click', (event) => {
+      if (menu.open && !menu.contains(event.target)) {
+        menu.open = false;
+      }
+    });
+  }
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: var(--color-paper);
+    border-block-end: 1px solid var(--color-rule);
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    min-height: var(--header-height);
+  }
+
+  .site-header__brand {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--touch-target);
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-tight);
+    color: var(--color-ink);
+    text-decoration: none;
+    margin-inline-end: auto;
+  }
+
+  .site-header__nav {
+    display: none;
+  }
+
+  .site-header__list {
+    display: flex;
+    gap: var(--space-md);
+  }
+
+  .site-header__link {
+    display: inline-block;
+    padding-block: var(--space-2xs);
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+    text-decoration: none;
+  }
+
+  .site-header__link:hover {
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+  }
+
+  .site-header__actions {
+    display: none;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .lang-switcher__list {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3xs);
+  }
+
+  .lang-switcher__link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: var(--touch-target-comfortable);
+    min-height: var(--touch-target-comfortable);
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    letter-spacing: var(--tracking-caps);
+    color: var(--color-ink-subtle);
+    text-decoration: none;
+  }
+
+  .lang-switcher__link[aria-current='true'] {
+    color: var(--color-ink);
+    font-weight: var(--weight-bold);
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+  }
+
+  .mobile-menu {
+    position: relative;
+    margin-inline-start: auto;
+  }
+
+  .mobile-menu__toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--touch-target-comfortable);
+    height: var(--touch-target-comfortable);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .mobile-menu__toggle::-webkit-details-marker {
+    display: none;
+  }
+
+  /* Three-bar icon drawn with one element plus its two pseudo-elements. */
+  .mobile-menu__icon,
+  .mobile-menu__icon::before,
+  .mobile-menu__icon::after {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background-color: var(--color-ink);
+  }
+
+  .mobile-menu__icon {
+    position: relative;
+  }
+
+  .mobile-menu__icon::before,
+  .mobile-menu__icon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+  }
+
+  .mobile-menu__icon::before {
+    top: -6px;
+  }
+
+  .mobile-menu__icon::after {
+    top: 6px;
+  }
+
+  .mobile-menu__panel {
+    position: absolute;
+    inset-inline-end: 0;
+    inset-block-start: calc(100% + var(--space-2xs));
+    min-width: 15rem;
+    padding: var(--space-sm);
+    background-color: var(--color-paper-raised);
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .mobile-menu__list {
+    display: grid;
+    gap: var(--space-3xs);
+    margin-block-end: var(--space-sm);
+  }
+
+  .mobile-menu__link {
+    display: block;
+    padding: var(--space-2xs);
+    min-height: var(--touch-target-comfortable);
+    color: var(--color-ink);
+    text-decoration: none;
+  }
+
+  .mobile-menu__link:hover {
+    text-decoration: underline;
+  }
+
+  .mobile-menu__cta {
+    width: 100%;
+  }
+
+  .mobile-menu__langs {
+    margin-block-start: var(--space-sm);
+    padding-block-start: var(--space-sm);
+    border-block-start: 1px solid var(--color-rule);
+  }
+
+  @media (width >= 62rem) {
+    .site-header__nav,
+    .site-header__actions {
+      display: flex;
+    }
+
+    .mobile-menu {
+      display: none;
+    }
+  }
+</style>

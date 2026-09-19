@@ -1,0 +1,84 @@
+---
+/**
+ * Fit criteria and exclusions: who this path is for, and who it is not for.
+ */
+import type { PathFit } from '../../content/types';
+
+interface Props {
+  fit: PathFit;
+  fitCriteriaLabel: string;
+  exclusionsLabel: string;
+}
+
+const { fit, fitCriteriaLabel, exclusionsLabel } = Astro.props;
+---
+
+<section class="path-fit section">
+  <div class="container">
+    <h2 class="path-fit__title">{fit.title}</h2>
+
+    <div class="path-fit__grid">
+      <div class="path-fit__column">
+        <h3 class="path-fit__column-title path-fit__column-title--yes">{fitCriteriaLabel}</h3>
+        <ul class="path-fit__list">
+          {fit.fitCriteria.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+
+      <div class="path-fit__column">
+        <h3 class="path-fit__column-title path-fit__column-title--no">{exclusionsLabel}</h3>
+        <ul class="path-fit__list">
+          {fit.exclusions.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .path-fit__title {
+    max-width: var(--measure);
+    margin-block-end: var(--space-lg);
+  }
+
+  .path-fit__grid {
+    display: grid;
+    gap: var(--space-lg);
+  }
+
+  .path-fit__column {
+    padding: var(--space-lg);
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-lg);
+  }
+
+  .path-fit__column-title {
+    padding-inline-start: var(--space-sm);
+    border-inline-start: 3px solid var(--color-rule-strong);
+  }
+
+  .path-fit__column-title--yes {
+    border-inline-start-color: var(--color-status-ok);
+  }
+
+  .path-fit__column-title--no {
+    border-inline-start-color: var(--color-status-risk);
+  }
+
+  .path-fit__list {
+    display: grid;
+    gap: var(--space-2xs);
+    margin-block-start: var(--space-md);
+  }
+
+  .path-fit__list li {
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+  }
+
+  @media (width >= 48rem) {
+    .path-fit__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>

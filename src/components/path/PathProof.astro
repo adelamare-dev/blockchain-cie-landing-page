@@ -1,0 +1,138 @@
+---
+/**
+ * The path's associated proof: context, problem, intervention, results,
+ * limits and stack. Rendered on a night surface to match the proof
+ * cartouche treatment used elsewhere on the site.
+ */
+import type { Proof } from '../../content/types';
+
+interface ProofLabels {
+  problem: string;
+  intervention: string;
+  results: string;
+  limits: string;
+  stack: string;
+}
+
+interface Props {
+  title: string;
+  proof: Proof;
+  labels: ProofLabels;
+}
+
+const { title, proof, labels } = Astro.props;
+---
+
+<section class="path-proof surface-night section">
+  <div class="container">
+    <h2 class="path-proof__title">{title}</h2>
+
+    <article class="path-proof__card">
+      <p class="path-proof__label mono-label">{proof.label}</p>
+      <p class="path-proof__context measure">{proof.context}</p>
+
+      <div class="path-proof__block">
+        <h3>{labels.problem}</h3>
+        <p class="measure">{proof.problem}</p>
+      </div>
+
+      <div class="path-proof__block">
+        <h3>{labels.intervention}</h3>
+        <p class="measure">{proof.intervention}</p>
+      </div>
+
+      <div class="path-proof__block">
+        <h3>{labels.results}</h3>
+        <dl class="path-proof__results">
+          {
+            proof.results.map((result) => (
+              <div class="path-proof__result">
+                <dt>{result.metric}</dt>
+                <dd>{result.context}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+
+      <div class="path-proof__block">
+        <h3>{labels.limits}</h3>
+        <p class="measure">{proof.limits}</p>
+      </div>
+
+      <div class="path-proof__block">
+        <h3>{labels.stack}</h3>
+        <ul class="path-proof__stack">
+          {proof.stack.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+    </article>
+  </div>
+</section>
+
+<style>
+  .path-proof__title {
+    max-width: var(--measure);
+    margin-block-end: var(--space-lg);
+  }
+
+  .path-proof__card {
+    display: grid;
+    gap: var(--space-sm);
+    padding: var(--space-lg);
+    background-color: var(--color-paper-raised);
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-lg);
+  }
+
+  .path-proof__context {
+    color: var(--color-ink-muted);
+  }
+
+  .path-proof__block {
+    padding-block-start: var(--space-sm);
+    border-block-start: 1px solid var(--color-rule);
+  }
+
+  .path-proof__block h3 {
+    margin-block-end: var(--space-2xs);
+  }
+
+  .path-proof__block p {
+    color: var(--color-ink-muted);
+  }
+
+  .path-proof__results {
+    display: grid;
+    gap: var(--space-sm);
+  }
+
+  .path-proof__result dt {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-bold);
+    color: var(--color-signal);
+  }
+
+  .path-proof__result dd {
+    margin: 0;
+    margin-block-start: var(--space-3xs);
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+  }
+
+  .path-proof__stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+  }
+
+  .path-proof__stack li {
+    padding: var(--space-3xs) var(--space-xs);
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    color: var(--color-ink-muted);
+    background-color: var(--color-paper-sunken);
+    border-radius: var(--radius-pill);
+  }
+</style>

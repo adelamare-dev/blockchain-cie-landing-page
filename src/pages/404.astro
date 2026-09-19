@@ -1,0 +1,78 @@
+---
+/**
+ * Single 404 document at the site root, so the web server can serve it for
+ * any unmatched URL regardless of locale. Content always renders in the
+ * default locale, since the requested URL may not resolve to any locale.
+ */
+import { DEFAULT_LOCALE } from '../i18n/config';
+import { getPath } from '../i18n/routes';
+import { getContent } from '../content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { CALENDLY_URL } from '../lib/links';
+
+const { ui, meta } = getContent(DEFAULT_LOCALE);
+const notFound = ui.notFound;
+const pageMeta = meta.notFound;
+
+const hrefByLink: Record<'home' | 'reliability' | 'build', string> = {
+  home: getPath('home', DEFAULT_LOCALE),
+  reliability: getPath('path-reliability', DEFAULT_LOCALE),
+  build: getPath('path-build', DEFAULT_LOCALE),
+};
+---
+
+<BaseLayout
+  locale={DEFAULT_LOCALE}
+  routeId="not-found"
+  title={pageMeta.title}
+  description={pageMeta.description}
+  noindex={true}
+>
+  <section class="not-found section container-text">
+    <p class="not-found__eyebrow mono-label">404</p>
+    <h1 class="not-found__title">{notFound.title}</h1>
+    <p class="not-found__message measure">{notFound.message}</p>
+
+    <ul class="not-found__links">
+      {
+        notFound.links.map((link) => (
+          <li>
+            <a class="button button--secondary" href={hrefByLink[link.href]}>
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="not-found__cta">
+      <a class="button button--primary" href={CALENDLY_URL} data-analytics="calendly_click">
+        {ui.nav.ctaCalendly}
+      </a>
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found {
+    display: grid;
+    gap: var(--space-md);
+    justify-items: start;
+    text-align: start;
+  }
+
+  .not-found__message {
+    color: var(--color-ink-muted);
+  }
+
+  .not-found__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-block-start: var(--space-sm);
+  }
+
+  .not-found__cta {
+    margin-block-start: var(--space-md);
+  }
+</style>

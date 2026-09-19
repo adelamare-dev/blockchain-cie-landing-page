@@ -1,0 +1,108 @@
+---
+/**
+ * Method: ordered steps plus a list of engagement responsibilities.
+ */
+import type { PathMethod } from '../../content/types';
+
+interface Props {
+  method: PathMethod;
+  responsibilitiesTitle: string;
+}
+
+const { method, responsibilitiesTitle } = Astro.props;
+---
+
+<section class="path-method section">
+  <div class="container">
+    <h2 class="path-method__title">{method.title}</h2>
+    <p class="path-method__intro measure">{method.intro}</p>
+
+    <ol class="path-method__steps">
+      {
+        method.steps.map((step, index) => (
+          <li class="path-method__step">
+            <span class="path-method__step-number mono-label" aria-hidden="true">
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <h3 class="path-method__step-title">{step.title}</h3>
+            <p class="path-method__step-description">{step.description}</p>
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="path-method__responsibilities">
+      <h3 class="path-method__responsibilities-title">{responsibilitiesTitle}</h3>
+      <ul class="path-method__responsibilities-list">
+        {method.responsibilities.map((item) => <li>{item}</li>)}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .path-method__title {
+    max-width: var(--measure);
+  }
+
+  .path-method__intro {
+    margin-block-start: var(--space-sm);
+    color: var(--color-ink-muted);
+  }
+
+  .path-method__steps {
+    display: grid;
+    gap: var(--space-lg);
+    margin-block-start: var(--space-xl);
+  }
+
+  .path-method__step {
+    display: grid;
+    gap: var(--space-2xs);
+    padding-block-start: var(--space-sm);
+    border-block-start: 1px solid var(--color-rule);
+  }
+
+  .path-method__step-number {
+    color: var(--color-signal);
+  }
+
+  .path-method__responsibilities {
+    margin-block-start: var(--space-xl);
+    padding: var(--space-lg);
+    background-color: var(--color-paper-sunken);
+    border-radius: var(--radius-lg);
+  }
+
+  .path-method__responsibilities-list {
+    display: grid;
+    gap: var(--space-2xs);
+    margin-block-start: var(--space-sm);
+  }
+
+  .path-method__responsibilities-list li {
+    position: relative;
+    padding-inline-start: var(--space-sm);
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+  }
+
+  .path-method__responsibilities-list li::before {
+    content: '–';
+    position: absolute;
+    inset-inline-start: 0;
+    color: var(--color-ink-subtle);
+  }
+
+  @media (width >= 48rem) {
+    .path-method__steps {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (width >= 62rem) {
+    .path-method__steps {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>

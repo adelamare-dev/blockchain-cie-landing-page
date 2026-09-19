@@ -1,0 +1,98 @@
+---
+/**
+ * Retainer continuity: what happens after the mission, resolved from the
+ * transverse `retainer` offer. No price is rendered.
+ */
+import type { PathRetainer, Offer } from '../../content/types';
+
+interface Props {
+  retainer: PathRetainer;
+  offer: Offer;
+  deliverablesLabel: string;
+}
+
+const { retainer, offer, deliverablesLabel } = Astro.props;
+---
+
+<section class="path-retainer section">
+  <div class="container">
+    <div class="path-retainer__card">
+      <h2 class="path-retainer__title">{retainer.title}</h2>
+      <p class="path-retainer__description measure">{retainer.description}</p>
+
+      <div class="path-retainer__offer">
+        <p class="path-retainer__offer-name">{offer.name}</p>
+        <p class="path-retainer__offer-outcome measure">{offer.outcome}</p>
+
+        <div class="path-retainer__block">
+          <h3>{deliverablesLabel}</h3>
+          <ul>
+            {offer.deliverables.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .path-retainer__card {
+    display: grid;
+    gap: var(--space-md);
+    padding: var(--space-lg);
+    background-color: var(--color-paper-sunken);
+    border-radius: var(--radius-lg);
+  }
+
+  .path-retainer__title {
+    max-width: var(--measure);
+  }
+
+  .path-retainer__description {
+    color: var(--color-ink-muted);
+  }
+
+  .path-retainer__offer {
+    display: grid;
+    gap: var(--space-2xs);
+    padding-block-start: var(--space-md);
+    border-block-start: 1px solid var(--color-rule);
+  }
+
+  .path-retainer__offer-name {
+    font-family: var(--font-display);
+    font-weight: var(--weight-bold);
+    font-size: var(--text-md);
+  }
+
+  .path-retainer__offer-outcome {
+    color: var(--color-ink-muted);
+  }
+
+  .path-retainer__block {
+    margin-block-start: var(--space-sm);
+  }
+
+  .path-retainer__block h3 {
+    margin-block-end: var(--space-2xs);
+  }
+
+  .path-retainer__block ul {
+    display: grid;
+    gap: var(--space-3xs);
+  }
+
+  .path-retainer__block li {
+    position: relative;
+    padding-inline-start: var(--space-sm);
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+  }
+
+  .path-retainer__block li::before {
+    content: '–';
+    position: absolute;
+    inset-inline-start: 0;
+    color: var(--color-ink-subtle);
+  }
+</style>

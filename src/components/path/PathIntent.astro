@@ -1,0 +1,40 @@
+---
+/**
+ * Intent section: the page's single h1 and its outcome statement.
+ * Rendered on a night surface, matching the hero treatment used elsewhere.
+ */
+import type { PathIntent } from '../../content/types';
+
+interface Props {
+  intent: PathIntent;
+}
+
+const { intent } = Astro.props;
+---
+
+<section class="path-intent surface-night">
+  <div class="path-intent__inner container">
+    <h1 class="path-intent__title">{intent.title}</h1>
+    <p class="path-intent__outcome measure">{intent.outcome}</p>
+  </div>
+</section>
+
+<style>
+  .path-intent {
+    padding-block: var(--space-2xl) var(--space-xl);
+  }
+
+  .path-intent__inner {
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  .path-intent__title {
+    max-width: var(--measure);
+  }
+
+  .path-intent__outcome {
+    font-size: var(--text-md);
+    color: var(--color-ink-muted);
+  }
+</style>

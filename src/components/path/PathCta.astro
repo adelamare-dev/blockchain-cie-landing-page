@@ -1,0 +1,54 @@
+---
+/**
+ * Closing call to action: primary link to Calendly, secondary mailto.
+ * Calendly opens in the same tab; no `target` attribute is set.
+ */
+import type { PathCta } from '../../content/types';
+import { CALENDLY_URL } from '../../lib/links';
+
+interface Props {
+  cta: PathCta;
+}
+
+const { cta } = Astro.props;
+const mailto = `mailto:${cta.ctaSecondaryEmail}`;
+---
+
+<section class="path-cta surface-night section">
+  <div class="container">
+    <div class="path-cta__inner">
+      <h2 class="path-cta__title">{cta.title}</h2>
+      <p class="path-cta__description measure">{cta.description}</p>
+
+      <div class="path-cta__actions">
+        <a class="button button--primary" href={CALENDLY_URL} data-analytics="calendly_click">
+          {cta.ctaPrimary}
+        </a>
+        <a class="button button--secondary" href={mailto} data-analytics="email_click">
+          {cta.ctaSecondaryLabel}
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .path-cta__inner {
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  .path-cta__title {
+    max-width: var(--measure);
+  }
+
+  .path-cta__description {
+    color: var(--color-ink-muted);
+  }
+
+  .path-cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+</style>

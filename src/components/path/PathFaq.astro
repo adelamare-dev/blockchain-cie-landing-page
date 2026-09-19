@@ -1,0 +1,70 @@
+---
+/**
+ * Contextual FAQ. Uses native `<details>` so questions collapse without any
+ * script, while every answer stays present in the static HTML for crawlers
+ * and for the matching FAQPage JSON-LD built by the page.
+ */
+interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+interface Props {
+  title: string;
+  items: readonly FaqItem[];
+}
+
+const { title, items } = Astro.props;
+---
+
+<section class="path-faq section">
+  <div class="container">
+    <h2 class="path-faq__title">{title}</h2>
+    <div class="path-faq__list">
+      {
+        items.map((item) => (
+          <details class="path-faq__item">
+            <summary class="path-faq__question">{item.question}</summary>
+            <p class="path-faq__answer">{item.answer}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .path-faq__title {
+    max-width: var(--measure);
+    margin-block-end: var(--space-lg);
+  }
+
+  .path-faq__list {
+    display: grid;
+    gap: var(--space-sm);
+    max-width: var(--measure);
+  }
+
+  .path-faq__item {
+    padding: var(--space-sm) var(--space-md);
+    background-color: var(--color-paper-raised);
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-md);
+  }
+
+  .path-faq__question {
+    display: flex;
+    align-items: center;
+    min-height: var(--touch-target-comfortable);
+    padding-block: var(--space-3xs);
+    font-family: var(--font-display);
+    font-weight: var(--weight-bold);
+    font-size: var(--text-sm);
+    cursor: pointer;
+  }
+
+  .path-faq__answer {
+    margin-block-start: var(--space-sm);
+    color: var(--color-ink-muted);
+  }
+</style>

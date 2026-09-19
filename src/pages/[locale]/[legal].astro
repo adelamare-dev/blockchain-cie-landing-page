@@ -1,0 +1,79 @@
+---
+/**
+ * The two legal pages: legal notice and privacy policy.
+ *
+ * One Astro route generates both slugs per locale, mirroring the [path]
+ * route: `legalId` on each static path selects the content entry and the
+ * matching `RouteId`.
+ */
+import { LOCALES, type Locale } from '../../i18n/config';
+import { getSlug, getUrl, type RouteId } from '../../i18n/routes';
+import { getContent } from '../../content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/path/Breadcrumb.astro';
+import LegalSections from '../../components/path/LegalSections.astro';
+import {
+  buildOrganization,
+  buildPerson,
+  buildWebSite,
+  buildWebPage,
+  buildBreadcrumbs,
+  buildGraph,
+} from '../../lib/schema';
+
+type LegalId = 'legal-notice' | 'privacy';
+
+interface LegalStaticProps {
+  locale: Locale;
+  legalId: LegalId;
+}
+
+export function getStaticPaths() {
+  const legalIds: LegalId[] = ['legal-notice', 'privacy'];
+
+  return LOCALES.flatMap((locale) =>
+    legalIds.map((legalId) => ({
+      params: { locale, legal: getSlug(legalId, locale) },
+      props: { locale, legalId } satisfies LegalStaticProps,
+    })),
+  );
+}
+
+const { locale, legalId } = Astro.props as LegalStaticProps;
+
+const content = getContent(locale);
+const { ui, meta, legal } = content;
+const routeId: RouteId = legalId;
+
+const page = legalId === 'legal-notice' ? legal.legalNotice : legal.privacyPolicy;
+const pageMeta = legalId === 'legal-notice' ? meta.legalNotice : meta.privacy;
+
+/** "Last updated" label, kept here since it is interface microcopy rather
+ * than authored legal content. */
+---
+
+<BaseLayout
+  locale={locale}
+  routeId={routeId}
+  title={pageMeta.title}
+  description={pageMeta.description}
+  jsonLd={buildGraph([
+    buildOrganization(locale),
+    buildPerson(locale),
+    buildWebSite(locale),
+    buildWebPage({ locale, routeId, title: pageMeta.title, description: pageMeta.description }),
+    buildBreadcrumbs([
+      { name: ui.breadcrumbHome, url: getUrl('home', locale) },
+      { name: page.title, url: getUrl(routeId, locale) },
+    ]),
+  ])}
+>
+  <Breadcrumb locale={locale} currentLabel={page.title} ariaLabel={ui.aria.breadcrumb} />
+
+  <LegalSections
+    title={page.title}
+    updatedAt={page.updatedAt}
+    updatedAtLabel={ui.updatedAtLabel}
+    sections={page.sections}
+  />
+</BaseLayout>

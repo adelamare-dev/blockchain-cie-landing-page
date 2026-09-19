@@ -1,0 +1,78 @@
+---
+/**
+ * Visible breadcrumb navigation.
+ *
+ * Used by path pages and legal pages. Home is a link, the current page is
+ * plain text marked with `aria-current="page"` so screen readers announce
+ * the current location without a redundant link.
+ */
+import { type Locale } from '../../i18n/config';
+import { getPath, type RouteId } from '../../i18n/routes';
+import { getContent } from '../../content';
+
+interface Props {
+  locale: Locale;
+  currentLabel: string;
+  ariaLabel: string;
+}
+
+const { locale, currentLabel, ariaLabel } = Astro.props;
+const { ui } = getContent(locale);
+
+const homePath = getPath('home' as RouteId, locale);
+---
+
+<nav class="breadcrumb" aria-label={ariaLabel}>
+  <ol class="breadcrumb__list">
+    <li class="breadcrumb__item">
+      <a class="breadcrumb__link" href={homePath}>{ui.breadcrumbHome}</a>
+    </li>
+    <li class="breadcrumb__item">
+      <span class="breadcrumb__current" aria-current="page">{currentLabel}</span>
+    </li>
+  </ol>
+</nav>
+
+<style>
+  .breadcrumb {
+    padding-block-start: var(--space-md);
+  }
+
+  .breadcrumb__list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3xs);
+    font-size: var(--text-xs);
+  }
+
+  .breadcrumb__item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3xs);
+  }
+
+  .breadcrumb__item + .breadcrumb__item::before {
+    content: '/';
+    color: var(--color-ink-subtle);
+  }
+
+  /* Inline-block plus vertical padding brings the hit area up to the 24px
+     minimum without changing where the text sits on the line. */
+  .breadcrumb__link {
+    display: inline-block;
+    padding-block: var(--space-3xs);
+    min-height: var(--touch-target);
+    color: var(--color-ink-muted);
+    text-decoration: none;
+  }
+
+  .breadcrumb__link:hover {
+    color: var(--color-ink);
+    text-decoration: underline;
+  }
+
+  .breadcrumb__current {
+    color: var(--color-ink-subtle);
+  }
+</style>

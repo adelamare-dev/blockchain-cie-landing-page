@@ -1,0 +1,78 @@
+---
+/**
+ * Home page, one per locale.
+ *
+ * Renders `getContent(locale).home` inside `BaseLayout`, in the fixed
+ * section order the page is designed around: hero, proof strip, path
+ * choice, offers overview, recent work, method, regulated environments,
+ * lead, FAQ, final call to action.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/home/Hero.astro';
+import ProofStrip from '../../components/home/ProofStrip.astro';
+import PathChoice from '../../components/home/PathChoice.astro';
+import OffersOverview from '../../components/home/OffersOverview.astro';
+import RecentWork from '../../components/home/RecentWork.astro';
+import Method from '../../components/home/Method.astro';
+import Regulated from '../../components/home/Regulated.astro';
+import Lead from '../../components/home/Lead.astro';
+import Faq from '../../components/home/Faq.astro';
+import FinalCta from '../../components/home/FinalCta.astro';
+import { LOCALES, isLocale } from '../../i18n/config';
+import { getContent } from '../../content';
+import {
+  buildFaq,
+  buildGraph,
+  buildOrganization,
+  buildPerson,
+  buildServices,
+  buildWebPage,
+  buildWebSite,
+} from '../../lib/schema';
+
+export function getStaticPaths() {
+  return LOCALES.map((locale) => ({ params: { locale } }));
+}
+
+const { locale: rawLocale } = Astro.params;
+
+if (!rawLocale || !isLocale(rawLocale)) {
+  throw new Error(`Invalid locale param: "${rawLocale}"`);
+}
+
+const locale = rawLocale;
+const { home, offers, proofs, meta } = getContent(locale);
+
+const jsonLd = buildGraph([
+  buildOrganization(locale),
+  buildPerson(locale),
+  buildWebSite(locale),
+  buildWebPage({
+    locale,
+    routeId: 'home',
+    title: meta.home.title,
+    description: meta.home.description,
+  }),
+  ...buildServices(locale, offers),
+  buildFaq(home.faq.items),
+]);
+---
+
+<BaseLayout
+  locale={locale}
+  routeId="home"
+  title={meta.home.title}
+  description={meta.home.description}
+  jsonLd={jsonLd}
+>
+  <Hero content={home.hero} />
+  <ProofStrip items={home.proofStrip} />
+  <PathChoice content={home.pathChoice} locale={locale} />
+  <OffersOverview content={home.offersOverview} offers={offers} />
+  <RecentWork content={home.recentWork} proofs={proofs} />
+  <Method content={home.method} />
+  <Regulated content={home.regulated} />
+  <Lead content={home.lead} />
+  <Faq title={home.faq.title} items={home.faq.items} />
+  <FinalCta content={home.finalCta} />
+</BaseLayout>

@@ -1,0 +1,174 @@
+---
+/**
+ * The path's offers, resolved by the page and passed in fully resolved.
+ * No price, range or day rate is rendered anywhere in this component.
+ */
+import type { Offer } from '../../content/types';
+
+/** Localized field labels. Passed in by the page, never hardcoded here,
+ * since this component renders identically for all three locales. */
+interface OfferLabels {
+  duration: string;
+  triggers: string;
+  deliverables: string;
+  clientInputs: string;
+  eligibility: string;
+  outOfScope: string;
+}
+
+interface Props {
+  title: string;
+  offers: readonly Offer[];
+  labels: OfferLabels;
+}
+
+const { title, offers, labels } = Astro.props;
+---
+
+<section class="path-offers section">
+  <div class="container">
+    <h2 class="path-offers__title">{title}</h2>
+    <div class="path-offers__grid">
+      {
+        offers.map((offer) => (
+          <article class="path-offers__card">
+            <h3 class="path-offers__name">{offer.name}</h3>
+            <p class="path-offers__descriptor mono-label">{offer.descriptor}</p>
+            <p class="path-offers__outcome">{offer.outcome}</p>
+
+            <dl class="path-offers__meta">
+              <div class="path-offers__meta-row">
+                <dt>{labels.duration}</dt>
+                <dd>{offer.duration}</dd>
+              </div>
+            </dl>
+
+            <div class="path-offers__block">
+              <h4>{labels.triggers}</h4>
+              <ul>
+                {offer.triggers.map((item) => <li>{item}</li>)}
+              </ul>
+            </div>
+
+            <div class="path-offers__block">
+              <h4>{labels.deliverables}</h4>
+              <ul>
+                {offer.deliverables.map((item) => <li>{item}</li>)}
+              </ul>
+            </div>
+
+            <div class="path-offers__block">
+              <h4>{labels.clientInputs}</h4>
+              <ul>
+                {offer.clientInputs.map((item) => <li>{item}</li>)}
+              </ul>
+            </div>
+
+            <div class="path-offers__block">
+              <h4>{labels.eligibility}</h4>
+              <ul>
+                {offer.eligibility.map((item) => <li>{item}</li>)}
+              </ul>
+            </div>
+
+            <div class="path-offers__block">
+              <h4>{labels.outOfScope}</h4>
+              <ul>
+                {offer.outOfScope.map((item) => <li>{item}</li>)}
+              </ul>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .path-offers__title {
+    max-width: var(--measure);
+    margin-block-end: var(--space-lg);
+  }
+
+  .path-offers__grid {
+    display: grid;
+    gap: var(--space-lg);
+  }
+
+  .path-offers__card {
+    display: grid;
+    gap: var(--space-sm);
+    padding: var(--space-lg);
+    background-color: var(--color-paper-raised);
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-lg);
+  }
+
+  .path-offers__descriptor {
+    margin-block-start: calc(-1 * var(--space-2xs));
+  }
+
+  .path-offers__outcome {
+    max-width: var(--measure);
+    color: var(--color-ink-muted);
+  }
+
+  .path-offers__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm) var(--space-lg);
+    padding-block: var(--space-xs);
+    border-block: 1px solid var(--color-rule);
+  }
+
+  .path-offers__meta-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3xs);
+  }
+
+  .path-offers__meta-row dt {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--color-ink-subtle);
+  }
+
+  .path-offers__meta-row dd {
+    margin: 0;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--color-ink);
+  }
+
+  .path-offers__block h4 {
+    margin-block-end: var(--space-2xs);
+  }
+
+  .path-offers__block ul {
+    display: grid;
+    gap: var(--space-3xs);
+  }
+
+  .path-offers__block li {
+    position: relative;
+    padding-inline-start: var(--space-sm);
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+  }
+
+  .path-offers__block li::before {
+    content: '–';
+    position: absolute;
+    inset-inline-start: 0;
+    color: var(--color-ink-subtle);
+  }
+
+  @media (width >= 62rem) {
+    .path-offers__grid {
+      grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+      align-items: start;
+    }
+  }
+</style>

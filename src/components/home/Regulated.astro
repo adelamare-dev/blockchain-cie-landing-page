@@ -1,0 +1,56 @@
+---
+/**
+ * Regulated environments: pharmacy background and regulatory accountability.
+ */
+import type { RegulatedSection } from '../../content/types';
+
+interface Props {
+  content: RegulatedSection;
+}
+
+const { content } = Astro.props;
+---
+
+<section class="regulated section">
+  <div class="regulated__inner container">
+    <h2>{content.title}</h2>
+    <p class="regulated__intro measure">{content.intro}</p>
+
+    <ul class="regulated__points">
+      {content.points.map((point) => <li>{point}</li>)}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .regulated__inner {
+    display: grid;
+    gap: var(--space-sm);
+  }
+
+  .regulated__intro {
+    color: var(--color-ink-muted);
+  }
+
+  .regulated__points {
+    margin-block-start: var(--space-sm);
+    display: grid;
+    gap: var(--space-sm);
+    max-width: var(--measure);
+  }
+
+  .regulated__points li {
+    padding-inline-start: var(--space-md);
+    position: relative;
+  }
+
+  .regulated__points li::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 0.55em;
+    width: 8px;
+    height: 2px;
+    background-color: var(--color-signal);
+  }
+</style>

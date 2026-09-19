@@ -1,40 +1,98 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Blockchain & Cie
 
-## Getting Started
+Marketing site for Blockchain & Cie, a software and AI engineering studio.
 
-First, run the development server:
+Static Astro build, three locales (French, English, Spanish) at full parity,
+no server runtime.
+
+## Requirements
+
+- Node 22.12 or later
+- pnpm 12 (`npm` is not used in this repo)
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The site runs at `http://localhost:4321`. The root redirects to `/fr/`.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+## Scripts
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+| Command | What it does |
+| --- | --- |
+| `pnpm dev` | Dev server |
+| `pnpm check` | Astro and TypeScript diagnostics |
+| `pnpm lint` | ESLint over TypeScript and Astro files |
+| `pnpm test` | Vitest unit tests |
+| `pnpm test:watch` | Vitest in watch mode |
+| `pnpm test:e2e` | Playwright end-to-end tests |
+| `pnpm build` | Static build into `dist/` |
+| `pnpm preview` | Serve the built output |
+| `pnpm verify` | check, lint, test and build in sequence |
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+Run `pnpm verify` before every deploy. A failure there is a blocker.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Project layout
 
-## Learn More
+```
+src/
+  i18n/          route table and locale configuration
+  content/       all copy, one folder per locale
+  lib/           JSON-LD builders and outbound links
+  layouts/       document shell
+  components/    shared, home/, path/
+  pages/         routes, sitemap, robots, llms.txt
+  styles/        design tokens and global foundations
+tests/
+  unit/          routes, content parity, metadata, editorial rules, legal
+  e2e/           navigation, accessibility, SEO
+astro.config.mjs   locales, / -> /fr/ redirect, static build
+eslint.config.js   flat ESLint config (JS, TS, Astro)
+```
 
-To learn more about Next.js, take a look at the following resources:
+## URLs
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+`src/i18n/routes.ts` maps a stable route id to one slug per locale and drives
+canonicals, hreflang, breadcrumbs and the sitemap.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+| Route | French | English | Spanish |
+| --- | --- | --- | --- |
+| home | `/fr/` | `/en/` | `/es/` |
+| reliability path | `/fr/fiabiliser-un-systeme/` | `/en/ai-code-audit/` | `/es/auditoria-de-codigo-ia/` |
+| build path | `/fr/construire-un-systeme/` | `/en/build-software-and-ai-agents/` | `/es/desarrollo-de-software-y-agentes-ia/` |
+| legal notice | `/fr/mentions-legales/` | `/en/legal-notice/` | `/es/aviso-legal/` |
+| privacy | `/fr/politique-de-confidentialite/` | `/en/privacy-policy/` | `/es/politica-de-privacidad/` |
 
-## Deploy on Vercel
+Slugs follow local search vocabulary rather than literal translation. Build
+links with the `getPath()` and `getUrl()` helpers so a slug change propagates.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Editing content
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Copy lives in `src/content/<locale>/`, typed against `src/content/types.ts`.
+French is the authoring language; English and Spanish are reviewed adaptations.
+
+The three locales must stay structurally identical. `pnpm test` fails on a
+mismatch, and also enforces the editorial rules: no price anywhere, no em dash,
+no unsourced comparative or uniqueness claim, every metric carries its context.
+
+## Before going live
+
+Legal values were verified against official records (Pappers/RNE, 2026-09-19)
+and the test `legal content has no unverified markers` in
+`tests/unit/legal.test.ts` is now an active gate: any `TODO_VERIFY()` marker
+reintroduced in legal content fails the build.
+
+Before deploying, re-check the legal page against the current Kbis and the
+hosting contract, per spec 17.2 of the external project spec.
+
+## Deployment
+
+The build is fully static. `pnpm build` produces `dist/`, which is uploaded to
+the target server. `dist/` is not committed.
+
+## License
+
+See `LICENSE`.

@@ -10,7 +10,7 @@
  * Booking link. Opens in the same tab, with no campaign UTM appended: campaign
  * specific links live as separate URLs so this one stays canonical.
  */
-export const CALENDLY_URL = "https://bit.ly/antoine-quickcall";
+export const CALENDLY_URL = "https://calendly.com/antoine-delamare/quick-call";
 
 export const CONTACT_EMAIL = "contact@blockchain-cie.com";
 

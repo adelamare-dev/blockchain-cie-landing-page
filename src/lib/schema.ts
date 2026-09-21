@@ -55,6 +55,7 @@ export function buildPerson(locale: Locale): JsonLdNode {
     "@id": PERSON_ID,
     name: "Antoine Delamare",
     jobTitle: PERSON_ROLE[locale],
+    image: `${SITE_URL}/photo.jpg`,
     email: CONTACT_EMAIL,
     worksFor: { "@id": ORGANIZATION_ID },
     sameAs: SOCIAL_PROFILES,

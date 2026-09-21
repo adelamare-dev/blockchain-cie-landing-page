@@ -116,6 +116,7 @@ export interface LeadSection {
   role: string;
   credentials: string[];
   bio: string;
+  photoAlt: string;
 }
 
 export interface FaqItem {

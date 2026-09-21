@@ -109,6 +109,7 @@ export const home = {
     ],
     bio:
       'Antoine dirige técnicamente cada misión. Antes del desarrollo, 7 años en farmacia de oficina, sector regulado. Trabaja en remoto en francés, inglés y español, y sigue siendo responsable del resultado, incluso cuando un especialista interviene en un alcance concreto.',
+    photoAlt: 'Retrato de Antoine Delamare',
   },
   faq: {
     title: 'Preguntas frecuentes',

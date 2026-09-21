@@ -15,13 +15,24 @@ const { content } = Astro.props;
 <section id="expertise" class="lead section">
   <div class="lead__inner container">
     <div class="lead__card">
-      <p class="lead__role mono-label">{content.role}</p>
-      <h2 class="lead__name">{content.name}</h2>
-      <p class="lead__bio measure">{content.bio}</p>
+      <img
+        class="lead__photo"
+        src="/photo.jpg"
+        alt={content.photoAlt}
+        width="800"
+        height="800"
+        loading="lazy"
+        decoding="async"
+      />
+      <div class="lead__body">
+        <p class="lead__role mono-label">{content.role}</p>
+        <h2 class="lead__name">{content.name}</h2>
+        <p class="lead__bio measure">{content.bio}</p>
 
-      <ul class="lead__credentials">
-        {content.credentials.map((credential) => <li>{credential}</li>)}
-      </ul>
+        <ul class="lead__credentials">
+          {content.credentials.map((credential) => <li>{credential}</li>)}
+        </ul>
+      </div>
     </div>
   </div>
 </section>
@@ -29,11 +40,33 @@ const { content } = Astro.props;
 <style>
   .lead__card {
     display: grid;
-    gap: var(--space-sm);
+    gap: var(--space-lg);
     padding: var(--space-lg);
     background-color: var(--color-paper-raised);
     border: 1px solid var(--color-rule);
     border-radius: var(--radius-lg);
+  }
+
+  .lead__photo {
+    inline-size: clamp(7rem, 20vw, 11rem);
+    block-size: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-md);
+  }
+
+  .lead__body {
+    display: grid;
+    gap: var(--space-sm);
+    align-content: start;
+  }
+
+  @media (width >= 48rem) {
+    .lead__card {
+      grid-template-columns: auto 1fr;
+      align-items: center;
+    }
   }
 
   .lead__role {

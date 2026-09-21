@@ -111,6 +111,7 @@ export const home = {
     ],
     bio:
       "Antoine leads every engagement on the technical side. Before development, he spent 7 years in community pharmacy, a regulated sector. He works remotely in French, English and Spanish, and stays accountable for the outcome, even when a specialist covers a specific part.",
+    photoAlt: 'Portrait of Antoine Delamare',
   },
   faq: {
     title: 'Frequently asked questions',

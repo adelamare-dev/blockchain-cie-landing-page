@@ -110,6 +110,7 @@ export const home = {
     ],
     bio:
       "Antoine dirige techniquement chaque mission. Avant le développement, 7 ans en pharmacie d’officine, secteur réglementé. Il travaille en remote, en français, anglais et espagnol, et reste responsable du résultat, même quand un spécialiste intervient sur un périmètre précis.",
+    photoAlt: "Portrait d’Antoine Delamare",
   },
   faq: {
     title: 'Questions fréquentes',

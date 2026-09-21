@@ -1,21 +1,22 @@
-FROM node:22-alpine AS deps
-RUN apk add --no-cache libc6-compat
-WORKDIR /app
+# FROM node:22-alpine AS deps
+# RUN apk add --no-cache libc6-compat
+# WORKDIR /app
 
-COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml ./
-RUN corepack enable pnpm && pnpm i
+# COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml ./
+# RUN corepack enable pnpm && pnpm i
 
-FROM node:22-alpine AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+# FROM node:22-alpine AS builder
+# WORKDIR /app
+# COPY --from=deps /app/node_modules ./node_modules
+# COPY . .
 
-RUN corepack enable pnpm && pnpm run build
+# RUN corepack enable pnpm && pnpm run build
 
-FROM nginx:1.30-alpine AS runner
+FROM nginx:1.30-alpine
 
 COPY docker.nginx.conf /etc/nginx/nginx.conf
-COPY --from=builder /app/dist /usr/share/nginx/html
+# COPY --from=builder /app/dist /usr/share/nginx/html
+COPY ./dist /usr/share/nginx/html
 
 EXPOSE 80
 

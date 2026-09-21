@@ -33,7 +33,13 @@ const navItems = [
 <header class="site-header">
   <div class="site-header__inner container">
     <a class="site-header__brand" href={homePath}>
-      <span class="site-header__brand-name">Blockchain &amp; Cie</span>
+      <img
+        class="site-header__logo"
+        src="/blockchain-cie-logo.png"
+        alt="Blockchain &amp; Cie"
+        width="512"
+        height="130"
+      />
     </a>
 
     <nav class="site-header__nav" aria-label={ui.aria.mainNav}>
@@ -165,13 +171,13 @@ const navItems = [
     display: inline-flex;
     align-items: center;
     min-height: var(--touch-target);
-    font-family: var(--font-display);
-    font-size: var(--text-sm);
-    font-weight: var(--weight-bold);
-    letter-spacing: var(--tracking-tight);
-    color: var(--color-ink);
-    text-decoration: none;
     margin-inline-end: auto;
+  }
+
+  .site-header__logo {
+    display: block;
+    height: 2.5rem;
+    width: auto;
   }
 
   .site-header__nav {

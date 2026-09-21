@@ -1,9 +1,9 @@
 {
   "name": "blockchain-cie",
   "type": "module",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "private": true,
-  "packageManager": "pnpm@12.3.4",
+  "packageManager": "pnpm@latest",
   "engines": {
     "node": ">=22.12.0"
   },

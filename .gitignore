@@ -16,6 +16,7 @@ pnpm-debug.log*
 # environment variables
 .env
 .env.production
+.venv
 
 # macOS-specific files
 .DS_Store
@@ -28,3 +29,6 @@ ___*
 .devin
 test-results
 .playwright-mcp
+
+# Docker environment
+docker-compose.yml
